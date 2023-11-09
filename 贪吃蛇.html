@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #canvas {
+            border: 2px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <script>
+        let canvas = document.getElementById('canvas')
+        let ctx = canvas.getContext('2d')
+        class Snake {
+            constructor() {
+                this.x = 0,
+                    this.y = 0,
+                    this.speed = 5,
+                    this.body = [{
+                        x: 0,
+                        y: 0
+                    }];
+                    this.isDie=false;
+                    this.sport='right'
+            }
+            drawSnake(ctx) {
+                ctx.fillStyle = 'green';
+                ctx.fillRect(this.x, this.y, 5, 5);
+                this.body.forEach(item => {
+                    ctx.fillRect(item.x, item.y, 5, 5);
+                })
+            }
+
+            move(ctx) {
+                document.addEventListener('keydown', (keyboard) => {
+                    switch (keyboard.key) {
+                        case 'ArrowUp':
+                            this.moveUp();
+                            break;
+                        case 'ArrowDown':
+                            this.moveDown();
+                            break;
+                        case 'ArrowLeft':
+                            this.moveLeft();
+                            break;
+                        case 'ArrowRight':
+                            this.moveRight();
+                            break;
+                        default:
+                            return;
+                    }
+                })
+            }
+
+            moveUp() {
+                this.sport='up'
+                this.body.unshift({
+                    x: this.x,
+                    y: this.y -= this.speed
+                });
+                this.checkBoundary()
+                this.body.pop();
+                this.checkEatBall();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                this.drawSnake(ctx);
+            }
+
+            moveDown() {
+                this.sport='down'
+                this.body.unshift({
+                    x: this.x,
+                    y: this.y += this.speed
+                });
+                this.checkBoundary()
+                this.body.pop();
+                this.checkEatBall();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                this.drawSnake(ctx);
+            }
+
+            moveLeft() {
+                this.sport='left'
+                this.body.unshift({
+                    x: this.x -= this.speed,
+                    y: this.y
+                });
+                this.checkBoundary()
+                this.body.pop();
+                this.checkEatBall();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                this.drawSnake(ctx);
+            }
+
+            moveRight() {
+                this.sport='right'
+                this.body.unshift({
+                    x: this.x += this.speed,
+                    y: this.y
+                });
+                this.checkBoundary()
+                this.body.pop();
+                this.checkEatBall();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                this.drawSnake(ctx);
+            }
+            checkEatBall() {
+                if (this.x === b.x && this.y === b.y) {
+                    this.body.push({ x: this.x, y: this.y });
+                    b.reDraw();
+                }
+            }
+            checkBoundary() {
+                if (this.x < 0 || this.x >= canvas.width || this.y < 0 || this.y >= canvas.height) {
+                        alert('Snake is die!');
+                }
+            }
+        }
+        class Ball {
+            constructor() {
+                this.x = 0;
+                this.y = 0;
+                this.reDraw();
+            }
+
+            drawBall(ctx) {
+                ctx.fillStyle = 'red';
+                ctx.fillRect(this.x, this.y, 5, 5);
+            }
+            reDraw() {
+                this.x = Math.floor(Math.random() * (30 - 10 + 1)) * 5 + 10;
+                this.y = Math.floor(Math.random() * (30 - 10 + 1)) * 5 + 10;
+            }
+        }
+
+        let s = new Snake();
+        s.move(ctx);
+        let b = new Ball();
+        function gameLoop() {
+            requestAnimationFrame(gameLoop);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            s.drawSnake(ctx);
+            b.drawBall(ctx);
+        }
+        setInterval(()=>{
+            s.sport=='right'?s.moveRight():s.sport=='down'?s.moveDown():s.sport=='up'?s.moveUp():s.sport=='left'?s.moveLeft():''
+            gameLoop()
+        },100)
+    </script>
+</body>
+
+</html>
